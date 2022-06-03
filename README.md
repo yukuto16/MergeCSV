@@ -16,3 +16,5 @@
 1. コンパイル `gcc -fexec-charset=CP932 -o main_csv .\main_csv.c`
 2. プログラムを実行　`.\main_csv.exe`
 3. マージしたいcsvファイルがあるパスを指定 `C:\Users\xxxx\xxx\xxx`
+
+- 定数 `FILE_STR` を変更すれば、好きな拡張子でマージできます
