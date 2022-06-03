@@ -5,9 +5,9 @@
 #include <string.h>
 #include <dirent.h>
 
-#define FILE_STR "csv"
-#define N 300
-#define B 260
+#define FILE_EXT "csv"
+#define PATH_SIZE 300
+#define BUF 260
 #define CSV_COUNT 1
 #define FIND_NUM 0
 #define FIND_CPY_NUM 1
@@ -16,8 +16,8 @@
 int FindExt(char *PathName, char *ext)
 {
     int i;
-    char buf[B];
-    memset(buf, FIND_NUM, sizeof(char)*B);
+    char buf[BUF];
+    memset(buf, FIND_NUM, sizeof(char)*BUF);
 
     for (i = strlen(PathName); i > FIND_NUM; i--)
     {
@@ -38,7 +38,7 @@ int FastMerge(const char* fast_file)
 {
     FILE *merge_fp = fopen("merge.csv", "w");
     FILE *file_fp = fopen(fast_file, "r");
-    char str[N];
+    char str[PATH_SIZE];
 
     if (merge_fp == NULL)
     {
@@ -53,7 +53,7 @@ int FastMerge(const char* fast_file)
     }
 
     // 中身全てをコピー
-    while (fgets(str, N, file_fp) != NULL)
+    while (fgets(str, PATH_SIZE, file_fp) != NULL)
     {
         fprintf(merge_fp, "%s", str);
     }
@@ -70,7 +70,7 @@ int Merge(const char* next_file)
 {
     FILE *merge_fp = fopen("merge.csv", "a");
     FILE *next_fp = fopen(next_file, "r");
-    char str[N];
+    char str[PATH_SIZE];
 
     if (merge_fp == NULL)
     {
@@ -88,7 +88,7 @@ int Merge(const char* next_file)
     while (fgetc(next_fp) != '\n' && !feof(next_fp));
 
     // 2行目以降をコピー
-    while (fgets(str, N, next_fp) != NULL)
+    while (fgets(str, PATH_SIZE, next_fp) != NULL)
     {
         fprintf(merge_fp, "%s", str);
     }
@@ -104,8 +104,8 @@ int main()
 {
     DIR *dir;
     struct dirent *ds;
-    char file_path[N];
-    char str_path[N];
+    char file_path[PATH_SIZE];
+    char str_path[PATH_SIZE];
     int count;
 
     // csvファイルが配置されているパスをキーボート入力
@@ -118,7 +118,7 @@ int main()
         snprintf(str_path, sizeof str_path, file_path);
 
         // 1回目のcsv
-        if (FindExt(ds->d_name,FILE_STR) == CSV_COUNT && count == CSV_COUNT)
+        if (FindExt(ds->d_name,FILE_EXT) == CSV_COUNT && count == CSV_COUNT)
         {
             count++;
             sprintf(str_path, "%s//%s", str_path, ds->d_name);
@@ -127,7 +127,7 @@ int main()
             FastMerge(str_path);
         }
         // 2回目以降のcsv
-        else if (FindExt(ds->d_name,FILE_STR) == CSV_COUNT && count != CSV_COUNT)
+        else if (FindExt(ds->d_name,FILE_EXT) == CSV_COUNT && count != CSV_COUNT)
         {
             sprintf(str_path, "%s//%s", str_path, ds->d_name);
             printf("%s\n", ds->d_name);
@@ -137,6 +137,8 @@ int main()
     }
 
     closedir(dir);
+
+    printf("正常終了\n");
     
     return 0;
 }
