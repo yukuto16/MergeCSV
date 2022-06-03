@@ -1,24 +1,33 @@
+// ToDo 例外処理の追加
+
 #include <stdio.h>
 #include <string.h>
 #include <dirent.h>
 
 #define FILE_STR "csv"
-#define N 1000
-
+#define N 300
+#define B 260
+#define CSV_COUNT 1
+#define FIND_NUM 0
+#define FIND_CPY_NUM 1
 
 // csvファイルか判断
 int FindExt(char *PathName, char *ext)
 {
     int i;
-    char buf[260];
-    memset(buf,0,sizeof(char)*260);
-    for (i = strlen(PathName); i > 0; i--)
+    char buf[B];
+    memset(buf, FIND_NUM, sizeof(char)*B);
+
+    for (i = strlen(PathName); i > FIND_NUM; i--)
     {
         if (PathName[i] == '.') break;
     }
-    if (i == 0) return 0;
-    strncpy(buf,PathName+i+1,strlen(PathName)-i);
-    if (strcmp(buf,ext) == 0) return 1;
+
+    if (i == FIND_NUM) return 0;
+    strncpy(buf, PathName+i+FIND_CPY_NUM, strlen(PathName)-i);
+
+    if (strcmp(buf, ext) == FIND_NUM) return 1;
+
     return 0;
 }
 
@@ -104,22 +113,22 @@ int main()
 
     dir=opendir(file_path);
 
-    for(ds = readdir(dir),count=1; ds != NULL; ds = readdir(dir)){
+    for(ds = readdir(dir), count = CSV_COUNT; ds != NULL; ds = readdir(dir)){
         snprintf(str_path, sizeof str_path, file_path);
 
         // 1回目のcsv
-        if (FindExt(ds->d_name,FILE_STR) == 1 && count == 1)
+        if (FindExt(ds->d_name,FILE_STR) == CSV_COUNT && count == CSV_COUNT)
         {
             count++;
-            sprintf(str_path, "%s//%s", str_path,ds->d_name);
+            sprintf(str_path, "%s//%s", str_path, ds->d_name);
             printf("%s\n", ds->d_name);
 
             FastMerge(str_path);
         }
         // 2回目以降のcsv
-        else if (FindExt(ds->d_name,FILE_STR) == 1 && count != 1)
+        else if (FindExt(ds->d_name,FILE_STR) == CSV_COUNT && count != CSV_COUNT)
         {
-            sprintf(str_path, "%s//%s", str_path,ds->d_name);
+            sprintf(str_path, "%s//%s", str_path, ds->d_name);
             printf("%s\n", ds->d_name);
             
             Merge(str_path);
