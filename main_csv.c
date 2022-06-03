@@ -1,4 +1,5 @@
 // ToDo 例外処理の追加
+//      定数・変数名のリファクタリング
 
 #include <stdio.h>
 #include <string.h>
